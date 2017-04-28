@@ -50,9 +50,8 @@ class CrackingSession:
         #-Start the clock
         self.total_time_start = time.perf_counter()
         
-        #-Create a queue to send data back to the main process, (this one)
-        #-In the future, may change it to a pipe for performance reasons, but starting out with queue since it is easier
-        parent_conn, child_conn = Pipe()
+        #-Still going back and forth on if I should use a pipe or queue here
+        pqueue_to_manager = Queue(maxsize = 10000)
         
         ##--Spawn a child process to handle backup storage as the list gets too big for the main priority queue
         #-Initialize the data structures
@@ -67,7 +66,7 @@ class CrackingSession:
         backup_storage_process.start()
         
         #-Spawn a child process to start generating the pre-terminals
-        priority_queue_process = Process(target=spawn_pqueue_thread, args=(self.pcfg, child_conn, self.verbose, print_queue_info, backup_save_comm, backup_restore_comm))
+        priority_queue_process = Process(target=spawn_pqueue_thread, args=(self.pcfg, pqueue_to_manager, self.verbose, print_queue_info, backup_save_comm, backup_restore_comm))
         priority_queue_process.daemon = True
         priority_queue_process.start()
         
@@ -81,7 +80,7 @@ class CrackingSession:
         self.p_queue_start_time = time.perf_counter()
         
         #-Get the first item from the child priority_queue process
-        queue_item = parent_conn.recv()
+        queue_item = pqueue_to_manager.get()
         
         #-If the value None is encountered the queue is either empty or an error occured so stopped
         if queue_item is None:
@@ -143,7 +142,7 @@ class CrackingSession:
             ##--Generate more parse trees from the priority queue
             self.p_queue_start_time = time.perf_counter()
             
-            queue_item = parent_conn.recv()
+            queue_item = pqueue_to_manager.get()
         
             #-If the value None is encountered the queue is either empty or an error occured so stopped
             if queue_item is None:
@@ -182,7 +181,7 @@ def keypress(user_input_ref):
 # send to the parent process
 # The parse trees will be sent back to the parent process in priority order
 ###############################################################################################
-def spawn_pqueue_thread(pcfg, child_conn, verbose, print_queue_info, backup_save_comm, backup_restore_comm):
+def spawn_pqueue_thread(pcfg, pqueue_to_manager, verbose, print_queue_info, backup_save_comm, backup_restore_comm):
         
     ##--Initialize the priority queue--##
     p_queue = PcfgQueue(backup_save_comm, backup_restore_comm, verbose = verbose)
@@ -198,12 +197,12 @@ def spawn_pqueue_thread(pcfg, child_conn, verbose, print_queue_info, backup_save
     
     ##--There are no more items to use in the queue, let the parent know we are done
     if ret_value == RetType.QUEUE_EMPTY:
-        child_con.send(None)
+        pqueue_to_manager.put(None)
         return ret_value
     
     while ret_value == RetType.STATUS_OK:
         for i in queue_item_list:
-            child_conn.send(i)
+            pqueue_to_manager.put(i)
             num_parse_trees = num_parse_trees + 1
             
             ##--Print out debugging info if requested
@@ -211,7 +210,7 @@ def spawn_pqueue_thread(pcfg, child_conn, verbose, print_queue_info, backup_save
                 if num_parse_trees % 10000 == 0:
                     print ("Total number of Parse Trees: " + str (num_parse_trees),file=sys.stderr)
                     print ("PQueue:" + str(len(p_queue.p_queue)),file=sys.stderr)
-                    
+                    print ("messaging size: " + str(pqueue_to_manager.qsize()))
                     ##--Request and get the size of the backup storage list
                     backup_save_comm.put({"Command":"Status"})
                     result = backup_restore_comm.get()
@@ -221,7 +220,7 @@ def spawn_pqueue_thread(pcfg, child_conn, verbose, print_queue_info, backup_save
         ret_value = p_queue.next_function(pcfg, queue_item_list)
         ##--There are no more items to use in the queue, let the parent know we are done
         if ret_value == RetType.QUEUE_EMPTY:
-            child_conn.send(None)
+            pqueue_to_manager.put(None)
             return ret_value
         
     return ret_value
