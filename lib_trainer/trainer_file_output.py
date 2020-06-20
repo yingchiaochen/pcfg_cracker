@@ -35,7 +35,7 @@ def make_directories_from_list(directory_listing):
             make_sure_path_exists(path)
     except OSError:
         print("Error creating the directories to save the results")
-        print(str(error))
+        # print(str(error))
         return False
     return True
     
@@ -56,6 +56,9 @@ def create_rule_folders(base_directory):
     # Non-PCFG related directories
     directory_listing.append(os.path.join(base_directory,"Masks"))
     directory_listing.append(os.path.join(base_directory,"Prince"))
+
+    # New Zhuyin directory
+    directory_listing.append(os.path.join(base_directory, "Zhuyin"))
     
     # PCFG replacements directories
     directory_listing.append(os.path.join(base_directory,"Grammar"))

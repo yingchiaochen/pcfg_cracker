@@ -89,7 +89,8 @@ def add_start(config):
         {"Config_id": "BASE_K", "Transition_id": "K"}, # Keyboard combos
         {"Config_id": "BASE_X", "Transition_id": "X"}, # ConteXt Sensitive replacements
         {"Config_id": "BASE_Y", "Transition_id": "Y"}, # Years
-        
+        {"Config_id": "BASE_Z", "Transition_id": "Z"}, # Zhuyin
+
         ]
 
     section = "START"
@@ -277,6 +278,28 @@ def add_capitalization(config, filenames):
     config.set(section, "is_terminal", str(True))
     config.set(section, "filenames", json.dumps(filenames))
 
+## Creates the configuration for Zhuyin 
+#
+#
+# Variables:
+#
+#     config: the config file being created
+#
+#     filenames: A list of filenames associated with this replacement
+#
+def add_zhuyin(config, filenames):
+
+    section = "ZHUYIN"
+    config.add_section(section)
+
+    config.set(section, "name", "Z")
+    config.set(section, "function", "Zhuyin")
+    config.set(section, "directory", "Zhuyin")
+    config.set(section, "comments", "save Zhuyin pattern like ㄨㄛˇ to ji3")
+    config.set(section, "file_type", "Length")
+    config.set(section, "inject_type", "Copy")
+    config.set(section, "is_terminal", str(True))
+    config.set(section, "filenames", json.dumps(filenames))
 
 ## Takes as input a Python Dictionary and returns a list of filenames from the keys
 #
@@ -342,6 +365,9 @@ def create_config_file(program_info, file_input, pcfg_parser):
     add_years(config)
     
     add_capitalization(config,create_filename_list(pcfg_parser.count_alpha_masks))
+
+    # add zhuyin
+    add_zhuyin(config,create_filename_list(pcfg_parser.count_zhuyin))
     
     # print({section: dict(config[section]) for section in config.sections()})
     

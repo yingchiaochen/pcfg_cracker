@@ -109,6 +109,11 @@ def save_indexed_counters(folder, counter_list, encoding):
 #
 def save_pcfg_data(base_directory, pcfg_parser, encoding, save_sensitive):
     
+    ## Save Zhuyin data
+    folder = os.path.join(base_directory, "Zhuyin")
+    if not save_indexed_counters(folder, pcfg_parser.count_zhuyin, encoding):
+        return False
+
     ## Save keyboard data
     #
     

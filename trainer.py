@@ -273,8 +273,10 @@ def main():
         
         # Advanced Options
         'smoothing': 0.01,
-        'coverage':0.6,
-        'max_len':21,
+        # 'coverage':0.6,
+        # only use PCFG Trainer
+        'coverage': 1,
+        'max_len': 21,
     }
       
     print_banner()

@@ -25,7 +25,7 @@ from .digit_detection import digit_detection
 from .other_detection import other_detection
 from .base_structure import base_structure_creation
 from .prince_metrics import prince_evaluation
-
+from .zhuyin_detection import zhuyin_detection
 
 ## Responsible for parsing passwords to train a PCFG grammar
 #
@@ -75,6 +75,9 @@ class PCFGPasswordParser:
         self.count_base_structures = Counter()
         self.count_raw_base_structures = Counter()
         self.count_prince = Counter()
+
+        # For Zhuyin counter
+        self.count_zhuyin = {}
     
     
     ## Main function called to parse an individual password
@@ -91,6 +94,10 @@ class PCFGPasswordParser:
         section_list, found_walks = detect_keyboard_walk(password)
         
         self._update_counter_len_indexed(self.count_keyboard, found_walks)
+
+        # Identify Zhuyin and update zhuyin counter
+        found_zhuyin = zhuyin_detection(password)
+        self._update_counter_zhuyin(self.count_zhuyin, found_zhuyin)
         
         # Identify e-mail and web sites before doing other string parsing
         # this is because they can have digits + special characters
@@ -190,3 +197,14 @@ class PCFGPasswordParser:
             except:
                 input_counter[len(item)] = Counter()
                 input_counter[len(item)][item] +=1
+
+    # for updating zhuyin_counter
+    def _update_counter_zhuyin(self, zhuyin_counter, input_list):
+        for item in input_list:
+            # item = (zstring, length)
+            try: 
+                zhuyin_counter[item[1]][item[0]] += 1
+
+            except:
+                zhuyin_counter[item[1]] = Counter()
+                zhuyin_counter[item[1]][item[0]] += 1

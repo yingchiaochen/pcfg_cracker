@@ -39,7 +39,7 @@ def base_structure_creation(section_list):
         if section[1] == None:
             print("Error with parsing this password")
             print(str(section_list))
-            raise
+            # raise
             
         # Check for unsupported transistions
         if section[1][0] in ['W','E']:
