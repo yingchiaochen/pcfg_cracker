@@ -96,6 +96,7 @@ class PCFGPasswordParser:
         self._update_counter_len_indexed(self.count_keyboard, found_walks)
 
         # Identify Zhuyin and update zhuyin counter
+        # found_zhuyin is a list of tuples
         found_zhuyin = zhuyin_detection(password)
         self._update_counter_zhuyin(self.count_zhuyin, found_zhuyin)
         
@@ -200,11 +201,13 @@ class PCFGPasswordParser:
 
     # for updating zhuyin_counter
     def _update_counter_zhuyin(self, zhuyin_counter, input_list):
+        # Go through every item in the list to insert it in the counter
         for item in input_list:
-            # item = (zstring, length)
+            # item format = (zstring, length)
             try: 
                 zhuyin_counter[item[1]][item[0]] += 1
-
+            
+            # if not exist, add a new counter
             except:
                 zhuyin_counter[item[1]] = Counter()
                 zhuyin_counter[item[1]][item[0]] += 1

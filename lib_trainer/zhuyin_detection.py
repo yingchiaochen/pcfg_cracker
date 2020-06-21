@@ -1,22 +1,37 @@
 ######################
 #
 # This function is to detect Zhuyin pattern.
-# pattern example: []
-#
+# pattern example: 
+# EX1: '123ㄨㄛˇ456ㄞˋ789ㄋㄧˇ' : [('123', None), ('ㄨㄛˇ', Z1), ('456', None), ('ㄞˋ', 'Z1'), ('789', None), ('ㄋㄧˇ', 'Z1')]
+# EX2: '123ㄨㄛˇㄞˋㄋㄧˇ' : [('123', None), ('ㄨㄛˇㄞˋㄋㄧˇ', Z3)]
+# 
 ######################
 
 def detect_zhuyin(section, zdic):
     parsing = []
     zhuyin_word = []
+    temp = []
 
     start = -1
     current = 0
     index = 0
+    END = '˙ˊˇˋ-'
 
     # ex: '123ㄨㄛˇ456ㄞˋ789ㄋㄧˇ'
     while index < len(section):
         # not a zhuyin character
         if section[index] not in zdic:
+            # the segment may be wrong, i.e., not detect char in END, abandon this segment
+            if start != -1:
+                start = -1
+
+            # no more consecutive zhuyin word detected, add it in zhuyin word
+            if len(temp) != 0:
+                zstring = ''.join(temp)
+                parsing.append((zstring, 'Z' + str(len(temp))))
+                zhuyin_word.append((zstring, len(temp)))
+                temp = []
+
             index += 1
             continue
         
@@ -26,7 +41,7 @@ def detect_zhuyin(section, zdic):
             parsing.append((section[current:index], None))
 
         # the end of a zhuyin word
-        if section[index] in '-ˊˇˋ':
+        if section[index] in END:
             # not correct operation
             if start == -1:
                 index += 1
@@ -37,8 +52,8 @@ def detect_zhuyin(section, zdic):
             l = ''
             for i in s:
                 l += zdic[i]
-
-            zhuyin_word.append(l)
+            
+            temp.append(l)
             start = -1
 
         else: 
@@ -48,11 +63,10 @@ def detect_zhuyin(section, zdic):
 
         index += 1
         current = index
-        
+    
+    # detect zhuyin pattern
     if len(zhuyin_word) > 0:
-        zstring = ''.join(zhuyin_word)
-        parsing.append((zstring, len(zhuyin_word)))
-        return parsing, (zstring, len(zhuyin_word))
+        return parsing, zhuyin_word
 
     return parsing, None
 
@@ -60,54 +74,19 @@ def detect_zhuyin(section, zdic):
 def zhuyin_detection(section_list):
     zhuyin_list = []
 
-    zdic = { 'ㄅ' : '1', 
-             'ㄆ' : 'q', 
-             'ㄇ' : 'a', 
-             'ㄈ' : 'z', 
-             'ㄉ' : '2', 
-             'ㄊ' : 'w', 
-             'ㄋ' : 's', 
-             'ㄌ' : 'x', 
-             'ㄍ' : 'e', 
-             'ㄎ' : 'd', 
-             'ㄏ' : 'c', 
-             'ㄐ' : 'r', 
-             'ㄑ' : 'f', 
-             'ㄒ' : 'v', 
-             'ㄓ' : '5', 
-             'ㄔ' : 't', 
-             'ㄕ' : 'g', 
-             'ㄖ' : 'b', 
-             'ㄗ' : 'y', 
-             'ㄘ' : 'h', 
-             'ㄙ' : 'n', 
-             'ㄧ' : 'u', 
-             'ㄨ' : 'j', 
-             'ㄩ' : 'm', 
-             'ㄚ' : '8', 
-             'ㄛ' : 'i', 
-             'ㄜ' : 'k', 
-             'ㄝ' : ',', 
-             'ㄞ' : '9', 
-             'ㄟ' : 'o', 
-             'ㄠ' : 'l', 
-             'ㄡ' : '.', 
-             'ㄢ' : '0', 
-             'ㄣ' : 'p', 
-             'ㄤ' : ';', 
-             'ㄥ' : '/', 
-             'ㄦ' : '-', 
-             '-' : '-', 
-             'ˊ' : '6', 
-             'ˇ' : '3', 
-             'ˋ' : '4'
-            }
+    ZHUYIN = 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ˙ˊˇˋ-'
+    ENGLISH = '1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/-7634 '
+    zhuyin_to_english = dict()
+
+    for (zhuyin, english) in zip(ZHUYIN, ENGLISH):
+        zhuyin_to_english[zhuyin] = english
+
 
     index = 0
     while index < len(section_list):
         # if not had been classified as one of the categories
         if section_list[index][1] == None:
-            parsing, zhuyin_string = detect_zhuyin(section_list[index], zdic)
+            parsing, zhuyin_string = detect_zhuyin(section_list[index], zhuyin_to_english)
 
             # if a zhuyin string was detected
             if zhuyin_string != None:
