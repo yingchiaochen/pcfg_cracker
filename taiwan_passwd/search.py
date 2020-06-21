@@ -174,8 +174,10 @@ class SearchZhuyin():
                 if len(try_to_translate) == p[0] - now:
                     try_to_translate += '-'
                     if try_to_translate in self.total_zhuyin:
-                        position.append((now, p[0]-1))
-                        zhuyin_ans.append(try_to_translate[:-1])
+                        # position.append((now, p[0]-1))
+                        # zhuyin_ans.append(try_to_translate[:-1])
+                        position.append((now, p[0]))
+                        zhuyin_ans.append(try_to_translate[:-1] + '}')
             position.append(p)
             zhuyin_ans.append(self.zhuyin_ans[idx])
             now = p[1] + 1
@@ -222,17 +224,17 @@ if __name__ == "__main__":
             l = line.strip('\n')
             r = x.search(l)
             if(r[0] == True):
-                result.append(r[1])
+                # result.append(r[1])
                 print(r[1])
                 count += 1
-            # result.append(r[1])
+            result.append(r[1])
 
         print(f'find {count} passwords!')
 
-    with open("test.txt", 'w+') as f:
-        for i in result:
-            f.write(i + '\n')
-
-    # with open("result.txt", 'w+') as f:
+    # with open("test1.txt", 'w+') as f:
     #     for i in result:
     #         f.write(i + '\n')
+
+    with open("result.txt", 'w+') as f:
+        for i in result:
+            f.write(i + '\n')

@@ -16,7 +16,7 @@ def detect_zhuyin(section, zdic):
     start = -1
     current = 0
     index = 0
-    END = '˙ˊˇˋ-'
+    END = '˙ˊˇˋ-}'
 
     # ex: '123ㄨㄛˇ456ㄞˋ789ㄋㄧˇ'
     while index < len(section):
@@ -58,7 +58,7 @@ def detect_zhuyin(section, zdic):
             temp.append(l)
             start = -1
 
-        else: 
+        else:
             # save the start position of the zhuyin character
             if start == -1:
                 start = index
@@ -89,6 +89,8 @@ def zhuyin_detection(section_list):
 
     for (zhuyin, english) in zip(ZHUYIN, ENGLISH):
         zhuyin_to_english[zhuyin] = english
+
+    zhuyin_to_english['}'] = ''
 
     index = 0
     while index < len(section_list):
