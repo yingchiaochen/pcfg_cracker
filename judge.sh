@@ -63,7 +63,7 @@ echo_outp "---Start: ${start_time}---"
 #watch --interval=10 echo "$guess"
 while IFS='$\n' read -r line;
 do
-	ret=`grep "^${line}$" ${testing_file}` 
+	ret=`grep -Fx -e "${line}" ${testing_file}`
 	if [ ! -z "${ret}" ]
 	then
 		((found++))
