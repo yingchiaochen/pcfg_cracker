@@ -302,6 +302,11 @@ def _load_terminals(ruleset_info, grammar, base_directory, config, skip_case):
         print("Error loading context sensitive terminals")
         return False  
 
+    # # load Zhuyin data
+    # if not _load_from_multiple_files(grammar, config['BASE_Z'], base_directory, encoding):
+    #     print("Error loading zhuyin terminals")
+    #     return False  
+
     # Load OMEN level probabilities
     full_path = os.path.join(base_directory, "Omen", "pcfg_omen_prob.txt")
     grammar['M'] = []     

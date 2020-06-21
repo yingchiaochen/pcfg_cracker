@@ -95,15 +95,13 @@ class PCFGPasswordParser:
         
         self._update_counter_len_indexed(self.count_keyboard, found_walks)
 
-        # Identify Zhuyin and update zhuyin counter
-        # found_zhuyin is a list of tuples
-        found_zhuyin = zhuyin_detection(password)
-        self._update_counter_zhuyin(self.count_zhuyin, found_zhuyin)
-        
         # Identify e-mail and web sites before doing other string parsing
         # this is because they can have digits + special characters
         
         found_emails, found_providers = email_detection(section_list)
+
+        # print(section_list)
+
         
         for email in found_emails:
             self.count_emails[email] += 1
@@ -118,7 +116,13 @@ class PCFGPasswordParser:
             self.count_website_hosts[host] += 1
         for prefix in found_prefixes:
             self.count_website_prefixes[prefix] += 1
+
+        # Identify Zhuyin and update zhuyin counter
+        # found_zhuyin is a list of tuples
+        found_zhuyin = zhuyin_detection(section_list)
+        self._update_counter_zhuyin(self.count_zhuyin, found_zhuyin)
         
+
         # Identify years in the dataset. This is done before other parsing
         # because parsing after this may classify years as another type
         
@@ -143,6 +147,8 @@ class PCFGPasswordParser:
         self._update_counter_len_indexed(self.count_alpha, found_alpha_strings)
         self._update_counter_len_indexed(self.count_alpha_masks, found_mask_list)
         
+        
+
         # Identify pure digit strings in the dataset
         
         found_digit_strings = digit_detection(section_list)
@@ -202,6 +208,7 @@ class PCFGPasswordParser:
     # for updating zhuyin_counter
     def _update_counter_zhuyin(self, zhuyin_counter, input_list):
         # Go through every item in the list to insert it in the counter
+        # print(input_list)
         for item in input_list:
             # item format = (zstring, length)
             try: 

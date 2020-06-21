@@ -8,6 +8,7 @@
 ######################
 
 def detect_zhuyin(section, zdic):
+    # print(section)
     parsing = []
     zhuyin_word = []
     temp = []
@@ -35,6 +36,7 @@ def detect_zhuyin(section, zdic):
             index += 1
             continue
         
+        # print(section[index])
         # the start of a zhuyin word, add the previous segment in the parsing
         # not index + 1 because we should not include the index character
         if current != index:
@@ -64,6 +66,13 @@ def detect_zhuyin(section, zdic):
         index += 1
         current = index
     
+    if len(temp) != 0:
+        zstring = ''.join(temp)
+        parsing.append((zstring, 'Z' + str(len(temp))))
+        zhuyin_word.append((zstring, len(temp)))
+        temp = []
+
+    # print(f'parsing = {parsing}')
     # detect zhuyin pattern
     if len(zhuyin_word) > 0:
         return parsing, zhuyin_word
@@ -81,16 +90,17 @@ def zhuyin_detection(section_list):
     for (zhuyin, english) in zip(ZHUYIN, ENGLISH):
         zhuyin_to_english[zhuyin] = english
 
-
     index = 0
     while index < len(section_list):
         # if not had been classified as one of the categories
         if section_list[index][1] == None:
-            parsing, zhuyin_string = detect_zhuyin(section_list[index], zhuyin_to_english)
+            parsing, zhuyin_string = detect_zhuyin(section_list[index][0], zhuyin_to_english)
 
             # if a zhuyin string was detected
             if zhuyin_string != None:
-                zhuyin_list.append(zhuyin_string)
+                # print(zhuyin_string)
+                # zhuyin_list.append(zhuyin_string)
+                zhuyin_list.extend(zhuyin_string)
 
                 # This is a trick to use the list extend but at an index
                 del section_list[index]
