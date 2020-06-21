@@ -50,7 +50,7 @@ cat /dev/null > ${output_file}
 echo_outp "---Start: ${start_time}---"
 while IFS='$\n' read -r line;
 do
-	ret=`grep "^${line}$" ${testing_file}` 
+	ret=`grep -Fx ''${line}'' ${testing_file}` 
 	if [ ! -z "${ret}" ]
 	then
 		((found++))
