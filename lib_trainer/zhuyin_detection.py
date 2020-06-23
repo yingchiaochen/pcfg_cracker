@@ -6,6 +6,8 @@
 # EX2: '123ㄨㄛˇㄞˋㄋㄧˇ' : [('123', None), ('ㄨㄛˇㄞˋㄋㄧˇ', Z3)]
 # 
 ######################
+from .search import SearchZhuyin
+
 
 def detect_zhuyin(section, zdic):
     # print(section)
@@ -80,7 +82,7 @@ def detect_zhuyin(section, zdic):
     return parsing, None
 
 
-def zhuyin_detection(section_list):
+def zhuyin_detection(section_list, x):
     zhuyin_list = []
 
     ZHUYIN = 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ˙ˊˇˋ-'
@@ -96,7 +98,8 @@ def zhuyin_detection(section_list):
     while index < len(section_list):
         # if not had been classified as one of the categories
         if section_list[index][1] == None:
-            parsing, zhuyin_string = detect_zhuyin(section_list[index][0], zhuyin_to_english)
+            r = x.search(section_list[index][0])
+            parsing, zhuyin_string = detect_zhuyin(r[1], zhuyin_to_english)
 
             # if a zhuyin string was detected
             if zhuyin_string != None:

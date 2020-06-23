@@ -26,6 +26,7 @@ from .other_detection import other_detection
 from .base_structure import base_structure_creation
 from .prince_metrics import prince_evaluation
 from .zhuyin_detection import zhuyin_detection
+from .search import SearchZhuyin
 
 ## Responsible for parsing passwords to train a PCFG grammar
 #
@@ -41,6 +42,9 @@ class PCFGPasswordParser:
     
         # Save the multiword detector
         self.multiword_detector = multiword_detector
+        
+        # Save the zhuyin searcher
+        self.xsearch = SearchZhuyin()
         
         # Initialize Leet Speak Detector
         self.leet_detector = LeetDetector(self.multiword_detector)
@@ -119,7 +123,7 @@ class PCFGPasswordParser:
 
         # Identify Zhuyin and update zhuyin counter
         # found_zhuyin is a list of tuples
-        found_zhuyin = zhuyin_detection(section_list)
+        found_zhuyin = zhuyin_detection(section_list, self.xsearch)
         self._update_counter_zhuyin(self.count_zhuyin, found_zhuyin)
         
 

@@ -3,11 +3,12 @@ import re
 import pickle
 from collections import defaultdict
 import sys
+import os
 
 class SearchZhuyin():
     # CHANGE THESE
-    ZHUYIN_DICTIONARY_PATH='./total.txt'
-    EXCEPTION_WORD_PATH='./exceptionWord.txt'
+    ZHUYIN_DICTIONARY_PATH='./lib_trainer/total.txt'
+    EXCEPTION_WORD_PATH='./lib_trainer/exceptionWord.txt'
 
     # DO NOT CHANGE THESE
     ZHUYIN='ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ˙ˊˇˋ-'
@@ -25,8 +26,8 @@ class SearchZhuyin():
             self.english_to_zhuyin[english.upper()] = zhuyin
 
         self.total_zhuyin = set()
-        with open(SearchZhuyin.ZHUYIN_DICTIONARY_PATH) as zhuyins:
-            with open(SearchZhuyin.EXCEPTION_WORD_PATH) as exceptions:
+        with open(SearchZhuyin.ZHUYIN_DICTIONARY_PATH, 'r') as zhuyins:
+            with open(SearchZhuyin.EXCEPTION_WORD_PATH, 'r') as exceptions:
                 exception = set(exceptions.read().strip().split('\n'))
                 for zhuyin in zhuyins:
                     if zhuyin.strip() in exception:
@@ -221,25 +222,13 @@ if __name__ == "__main__":
     result = []
     with open(file, "r") as f:
         for line in f:
-            line = line.strip('\n')
-
-            off1 = line.find('@')
-            if off1 < 0:
-                continue
-            off2 = line[off1:].find(':')
-            if off2 < 0:
-                off2 = line[off1:].find(';')
-            if off2 < 0:
-                continue
-
-            off2 += off1 + 1
-            password = line[off2:]
-            success, ret = x.search(password)
-            if(success):
-                print(password)
-                result.append(ret)
+            l = line.strip('\n')
+            r = x.search(l)
+            if(r[0] == True):
+                # result.append(r[1])
+                print(r[1])
                 count += 1
-            # result.append(r[1])
+            result.append(r[1])
 
         print(f'find {count} passwords!')
 
@@ -247,10 +236,6 @@ if __name__ == "__main__":
     #     for i in result:
     #         f.write(i + '\n')
 
-    # with open("result.txt", 'w+') as f:
-    #     for i in result:
-    #         f.write(i + '\n')
-
-    with open("Breach2.txt", 'w+') as f:
+    with open("result.txt", 'w+') as f:
         for i in result:
             f.write(i + '\n')

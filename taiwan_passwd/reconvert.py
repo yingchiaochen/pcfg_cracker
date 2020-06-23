@@ -10,7 +10,7 @@ for (zhuyin, english) in zip(ZHUYIN, ENGLISH):
 
 ## for analyze zhuyin pattern
 for i in range(1, 8):
-    file = f'../Rules/ZhuyinRules/Zhuyin/{i}.txt'
+    file = f'../Rules/ZhuyinTest/Zhuyin/{i}.txt'
     count = 0
     result = []
 
@@ -25,7 +25,7 @@ for i in range(1, 8):
             print(r)
             # result.append(r[1])
 
-    with open(f"analyze/z{i}.txt", 'w+') as f:
+    with open(f"analyze/ztest{i}.txt", 'w+') as f:
         for i in result:
             f.write(i[0] + '\t' + i[1] + '\n')
 
