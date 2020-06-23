@@ -219,27 +219,45 @@ if __name__ == "__main__":
     file = sys.argv[1]
     count = 0
     result = []
+
+    w = open("Validation.txt", 'a');
+    
+    pre = 271388000127
+
     with open(file, "r") as f:
+        c = 0
+        offset = pre
+        f.seek(offset)
         for line in f:
-            line = line.strip('\n')
+            c += 1
+            try: 
+                offset += len(line)
+                print(offset)
+                line = line.strip('\n')
 
-            off1 = line.find('@')
-            if off1 < 0:
-                continue
-            off2 = line[off1:].find(':')
-            if off2 < 0:
-                off2 = line[off1:].find(';')
-            if off2 < 0:
-                continue
+                off1 = line.find('@')
+                if off1 < 0:
+                    continue
+                off2 = line[off1:].find(':')
+                if off2 < 0:
+                    off2 = line[off1:].find(';')
+                if off2 < 0:
+                    continue
 
-            off2 += off1 + 1
-            password = line[off2:]
-            success, ret = x.search(password)
-            if(success):
-                print(password)
-                result.append(ret)
-                count += 1
-            # result.append(r[1])
+                off2 += off1 + 1
+                password = line[off2:]
+                success, ret = x.search(password)
+                if(success):
+                    # print(password)
+                    result.append(ret)
+                    count += 1
+                    w.write(ret + '\n')
+                
+                # result.append(r[1])
+                # print(c)
+            except UnicodeEncodeError as e:
+                print(offset)
+                continue
 
         print(f'find {count} passwords!')
 
@@ -251,6 +269,6 @@ if __name__ == "__main__":
     #     for i in result:
     #         f.write(i + '\n')
 
-    with open("Breach2.txt", 'w+') as f:
-        for i in result:
-            f.write(i + '\n')
+    # with open("Validation.txt", 'w+') as f:
+    #     for i in result:
+    #         f.write(i + '\n')
