@@ -191,8 +191,11 @@ class SearchZhuyin():
                     if len(try_to_translate) == self.length - p[1] - 1:
                         try_to_translate += '-'
                         if try_to_translate in self.total_zhuyin:
-                            position.append((p[1]+1, self.length-1))
-                            zhuyin_ans.append(try_to_translate[:-1])
+                            # position.append((p[1]+1, self.length-1))
+                            # zhuyin_ans.append(try_to_translate[:-1])
+                            position.append((p[1]+1, self.length))
+                            zhuyin_ans.append(try_to_translate[:-1] + '}')
+
         self.position = position
         self.zhuyin_ans = zhuyin_ans
 
