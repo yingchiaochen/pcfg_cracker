@@ -72,13 +72,15 @@ echo_outp "---Start: ${start_time}---"
 while IFS='$\n' read -r line;
 do
 	ret=`grep -Fx -e "${line}" ${testing_file} | head -1`
+	
+	if [ $[${guess} % 10000] -eq 0  ]
+	then
+		now=`date +"%F %T"`
+		echo_record "guess: ${guess} found: ${found} time: ${now} "
+	fi
+	
 	if [ ! -z "${ret}" ]
 	then
-		if [ $[${guess} % 10000] -eq 0  ]
-		then
-			now=`date +"%F %T"`
-			echo_record "guess: ${guess} found: ${found} time: ${now} "
-		fi
 		((found++))
 		echo_outp "Found ${ret}"
 	fi
