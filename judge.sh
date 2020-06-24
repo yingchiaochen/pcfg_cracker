@@ -25,7 +25,15 @@ function echo_outp()
 		echo "$@" >> ${output_file}
 	fi
 }
-
+function echo_record()
+{
+	if [[ ${silence} -eq $zero  ]]
+	then
+		echo "$@" | tee -a "${output_file}-record"
+	else
+		echo "$@" >> "${output_file}-record"
+	fi
+}
 
 function user_interrupt()
 {
@@ -57,15 +65,20 @@ do
 done
 echo "$testing_file $output_file $silence"
 trap user_interrupt SIGINT
-add_crontab
+#add_crontab
 cat /dev/null > ${output_file}
 echo_outp "---Start: ${start_time}---"
 #watch --interval=10 echo "$guess"
 while IFS='$\n' read -r line;
 do
-	ret=`grep -Fx -e "${line}" ${testing_file}`
+	ret=`grep -Fx -e "${line}" ${testing_file} | head -1`
 	if [ ! -z "${ret}" ]
 	then
+		if [ $[${guess} % 10000] -eq 0  ]
+		then
+			now=`date +"%F %T"`
+			echo_record "guess: ${guess} found: ${found} time: ${now} "
+		fi
 		((found++))
 		echo_outp "Found ${ret}"
 	fi
