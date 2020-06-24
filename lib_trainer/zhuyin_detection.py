@@ -101,6 +101,16 @@ def zhuyin_detection(section_list, x):
             r = x.search(section_list[index][0])
             parsing, zhuyin_string = detect_zhuyin(r[1], zhuyin_to_english)
 
+            # convert string that are not able to parse back into english character
+            for i in range(len(parsing)):
+                l = ''
+                for j in range(len(parsing[i][0])):
+                    if parsing[i][0][j] in zhuyin_to_english:
+                        l += zhuyin_to_english[parsing[i][0][j]]
+                    else:
+                        l += parsing[i][0][j]
+                parsing[i] = (l, parsing[i][1])
+            
             # if a zhuyin string was detected
             if zhuyin_string != None:
                 # print(zhuyin_string)
