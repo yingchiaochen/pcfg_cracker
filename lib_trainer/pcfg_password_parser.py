@@ -98,6 +98,11 @@ class PCFGPasswordParser:
         section_list, found_walks = detect_keyboard_walk(password)
         
         self._update_counter_len_indexed(self.count_keyboard, found_walks)
+        
+        # Identify Zhuyin and update zhuyin counter
+        # found_zhuyin is a list of tuples
+        found_zhuyin = zhuyin_detection(section_list, self.xsearch)
+        self._update_counter_zhuyin(self.count_zhuyin, found_zhuyin)
 
         # Identify e-mail and web sites before doing other string parsing
         # this is because they can have digits + special characters
@@ -121,10 +126,6 @@ class PCFGPasswordParser:
         for prefix in found_prefixes:
             self.count_website_prefixes[prefix] += 1
 
-        # Identify Zhuyin and update zhuyin counter
-        # found_zhuyin is a list of tuples
-        found_zhuyin = zhuyin_detection(section_list, self.xsearch)
-        self._update_counter_zhuyin(self.count_zhuyin, found_zhuyin)
         
 
         # Identify years in the dataset. This is done before other parsing
