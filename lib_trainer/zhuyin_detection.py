@@ -24,7 +24,7 @@ def detect_zhuyin(section, zdic):
     while index < len(section):
         # not a zhuyin character
         if section[index] not in zdic:
-            # the segment may be wrong, i.e., not detect char in END, abandon this segment
+            # the segment may be wrong, i.e., not detect char in END, abandon this segment and reset
             if start != -1:
                 start = -1
 
@@ -99,9 +99,15 @@ def zhuyin_detection(section_list, x):
         # if not had been classified as one of the categories
         if section_list[index][1] == None:
             r = x.search(section_list[index][0])
-            parsing, zhuyin_string = detect_zhuyin(r[1], zhuyin_to_english)
 
-            # convert string that are not able to parse back into english character
+            # not found zhuyin
+            if r[0] == False:
+                index += 1
+                continue
+            else:
+                parsing, zhuyin_string = detect_zhuyin(r[1], zhuyin_to_english)
+
+            # convert string that are not able to parse back into english character, just for check
             for i in range(len(parsing)):
                 l = ''
                 for j in range(len(parsing[i][0])):
