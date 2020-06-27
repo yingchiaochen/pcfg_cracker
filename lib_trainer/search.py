@@ -68,8 +68,7 @@ class SearchZhuyin():
             for i in range(len(self.position)):
                 ans += inp[now:self.position[i][0]]
                 now = self.position[i][1] + 1
-                ans += self.zhuyin_ans[zhuyin_now:zhuyin_now+self.position[i][1]-self.position[i][0]+1]
-                zhuyin_now += self.position[i][1] - self.position[i][0] + 1
+                ans += self.zhuyin_ans[i]
             ans += inp[now:]
             return ans
 
@@ -177,7 +176,7 @@ class SearchZhuyin():
                     if try_to_translate in self.total_zhuyin:
                         # position.append((now, p[0]-1))
                         # zhuyin_ans.append(try_to_translate[:-1])
-                        position.append((now, p[0]))
+                        position.append((now, p[0]-1))
                         zhuyin_ans.append(try_to_translate[:-1] + '}')
             position.append(p)
             zhuyin_ans.append(self.zhuyin_ans[idx])
@@ -193,7 +192,7 @@ class SearchZhuyin():
                         if try_to_translate in self.total_zhuyin:
                             # position.append((p[1]+1, self.length-1))
                             # zhuyin_ans.append(try_to_translate[:-1])
-                            position.append((p[1]+1, self.length))
+                            position.append((p[1]+1, self.length-1))
                             zhuyin_ans.append(try_to_translate[:-1] + '}')
 
         self.position = position
