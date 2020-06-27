@@ -15,6 +15,7 @@ Rules/*
 # Don't ignore the default ruleset
 !Rules/Default
 !Rules/ZhuyinRules
+!Rules/NoZhuyin
 
 # Don't commit save files
 *.sav
