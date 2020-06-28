@@ -349,7 +349,7 @@ def main():
                     program_info['encoding'])
                     
     # Initialize the alphabet generator to learn the alphabet
-    # ag = AlphabetGenerator(program_info['alphabet_size'], program_info['ngram'])
+    ag = AlphabetGenerator(program_info['alphabet_size'], program_info['ngram'])
     
     # Intitialize the multi-word detector
     multiword_detector = MultiWordDetector(
@@ -373,7 +373,7 @@ def main():
                 print(str(num_parsed_so_far//1000000) +' Million')
             
             # Save statistics for the alphabet
-            # ag.process_password(password)
+            ag.process_password(password)
             
             # Train multiword detector
             multiword_detector.train(password)
@@ -387,7 +387,7 @@ def main():
         return
         
     # Save the learned alphabet
-    # program_info['alphabet'] = ag.get_alphabet()
+    program_info['alphabet'] = ag.get_alphabet()
     
     # Record how many valid passwords there were
     num_valid_passwords = file_input.num_passwords
@@ -439,11 +439,11 @@ def main():
     print("------------")
     
     # Initialize OMEN lookup tables
-    # omen_trainer = AlphabetLookup(
-    #     alphabet = program_info['alphabet'], 
-    #     ngram = program_info['ngram'],
-    #     max_length = program_info['max_len']
-    #     )
+    omen_trainer = AlphabetLookup(
+        alphabet = program_info['alphabet'], 
+        ngram = program_info['ngram'],
+        max_length = program_info['max_len']
+        )
     
     # Initialize the PCFG Password parse
     pcfg_parser = PCFGPasswordParser(multiword_detector)
@@ -459,7 +459,7 @@ def main():
                 print(str(num_parsed_so_far//1000000) +' Million')
                 
             # Parse OMEN info
-            # omen_trainer.parse(password)
+            omen_trainer.parse(password)
             
             # Parse the pcfg info
             pcfg_parser.parse(password)
@@ -480,20 +480,20 @@ def main():
     print()
     
     # Calculate the OMEN level data
-    # omen_trainer.apply_smoothing()
+    omen_trainer.apply_smoothing()
     
-    # omen_keyspace = calc_omen_keyspace(omen_trainer)
+    omen_keyspace = calc_omen_keyspace(omen_trainer)
     
     # Add in the probability of brute force to the base structures
-    # if program_info['coverage'] != 0:
-    #     # Make sure there are valid OMEN parses, otherwise no sense creating
-    #     # a brute force rule
-    #     if omen_keyspace.most_common(1) != []:
-    #         # Adding the Markov/Omen numbers in as addition to the currently parsed
-    #         # passwords vs. resetting the counts/probabilities of what was already
-    #         # parsed
-    #         markov_instances = (num_valid_passwords /  program_info['coverage']) - num_valid_passwords
-    #         pcfg_parser.count_base_structures['M'] = markov_instances
+    if program_info['coverage'] != 0:
+        # Make sure there are valid OMEN parses, otherwise no sense creating
+        # a brute force rule
+        if omen_keyspace.most_common(1) != []:
+            # Adding the Markov/Omen numbers in as addition to the currently parsed
+            # passwords vs. resetting the counts/probabilities of what was already
+            # parsed
+            markov_instances = (num_valid_passwords /  program_info['coverage']) - num_valid_passwords
+            pcfg_parser.count_base_structures['M'] = markov_instances
     
     print("")    
     
@@ -503,39 +503,39 @@ def main():
     print("")   
     
     # Re-Initialize the file input to read passwords from
-    # file_input = TrainerFileInput(
-    #                 program_info['training_file'], 
-    #                 program_info['encoding'])
+    file_input = TrainerFileInput(
+                    program_info['training_file'], 
+                    program_info['encoding'])
                     
     # Reset progress_bar
     num_parsed_so_far = 0
     print("Printing out status after every million passwords parsed")
     print("------------")
     
-    # omen_levels_count = Counter()
-    ## Loop until we hit the end of the file
+    omen_levels_count = Counter()
+    # Loop until we hit the end of the file
 
-    # try:
-    #     password = file_input.read_password()
-    #     while password:
+    try:
+        password = file_input.read_password()
+        while password:
         
-    #         # Print status indicator if needed
-    #         num_parsed_so_far += 1
-    #         if num_parsed_so_far % 1000000 == 0:
-    #             print(str(num_parsed_so_far//1000000) +' Million')
+            # Print status indicator if needed
+            num_parsed_so_far += 1
+            if num_parsed_so_far % 1000000 == 0:
+                print(str(num_parsed_so_far//1000000) +' Million')
                 
-    #         # Find OMEN level of password
-    #         level = find_omen_level(omen_trainer,password)
-    #         omen_levels_count[level] += 1
+            # Find OMEN level of password
+            level = find_omen_level(omen_trainer,password)
+            omen_levels_count[level] += 1
             
-    #         # Get the next password
-    #         password = file_input.read_password()
+            # Get the next password
+            password = file_input.read_password()
         
-    # except Exception as msg:
-    #     traceback.print_exc(file=sys.stdout)
-    #     print("Exception: " + str(msg))
-    #     print("Exiting...")
-    #     return
+    except Exception as msg:
+        traceback.print_exc(file=sys.stdout)
+        print("Exception: " + str(msg))
+        print("Exiting...")
+        return
     
     print()    
     print("-------------------------------------------------") 
@@ -550,12 +550,12 @@ def main():
         print("Exiting...")
         return
     
-    # # Save the OMEN data
-    # if not save_omen_rules_to_disk(omen_trainer, omen_keyspace, omen_levels_count, num_valid_passwords, base_directory, program_info):
-    #     print("Error, something went wrong saving the OMEN data to disk")
-    #     print("The training did not compleate correctly")
-    #     print("Exiting...")
-    #     return
+    # Save the OMEN data
+    if not save_omen_rules_to_disk(omen_trainer, omen_keyspace, omen_levels_count, num_valid_passwords, base_directory, program_info):
+        print("Error, something went wrong saving the OMEN data to disk")
+        print("The training did not compleate correctly")
+        print("Exiting...")
+        return
         
     # Save the pcfg data to disk
     if not save_pcfg_data(

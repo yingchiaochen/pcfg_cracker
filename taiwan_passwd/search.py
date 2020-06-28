@@ -3,11 +3,12 @@ import re
 import pickle
 from collections import defaultdict
 import sys
+import os
 
 class SearchZhuyin():
     # CHANGE THESE
-    ZHUYIN_DICTIONARY_PATH='./total.txt'
-    EXCEPTION_WORD_PATH='./exceptionWord.txt'
+    ZHUYIN_DICTIONARY_PATH='./lib_trainer/total.txt'
+    EXCEPTION_WORD_PATH='./lib_trainer/exceptionWord.txt'
 
     # DO NOT CHANGE THESE
     ZHUYIN='ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ˙ˊˇˋ-'
@@ -25,8 +26,8 @@ class SearchZhuyin():
             self.english_to_zhuyin[english.upper()] = zhuyin
 
         self.total_zhuyin = set()
-        with open(SearchZhuyin.ZHUYIN_DICTIONARY_PATH) as zhuyins:
-            with open(SearchZhuyin.EXCEPTION_WORD_PATH) as exceptions:
+        with open(SearchZhuyin.ZHUYIN_DICTIONARY_PATH, 'r') as zhuyins:
+            with open(SearchZhuyin.EXCEPTION_WORD_PATH, 'r') as exceptions:
                 exception = set(exceptions.read().strip().split('\n'))
                 for zhuyin in zhuyins:
                     if zhuyin.strip() in exception:
@@ -67,8 +68,7 @@ class SearchZhuyin():
             for i in range(len(self.position)):
                 ans += inp[now:self.position[i][0]]
                 now = self.position[i][1] + 1
-                ans += self.zhuyin_ans[zhuyin_now:zhuyin_now+self.position[i][1]-self.position[i][0]+1]
-                zhuyin_now += self.position[i][1] - self.position[i][0] + 1
+                ans += self.zhuyin_ans[i]
             ans += inp[now:]
             return ans
 
@@ -176,7 +176,7 @@ class SearchZhuyin():
                     if try_to_translate in self.total_zhuyin:
                         # position.append((now, p[0]-1))
                         # zhuyin_ans.append(try_to_translate[:-1])
-                        position.append((now, p[0]))
+                        position.append((now, p[0]-1))
                         zhuyin_ans.append(try_to_translate[:-1] + '}')
             position.append(p)
             zhuyin_ans.append(self.zhuyin_ans[idx])
@@ -190,8 +190,11 @@ class SearchZhuyin():
                     if len(try_to_translate) == self.length - p[1] - 1:
                         try_to_translate += '-'
                         if try_to_translate in self.total_zhuyin:
+                            # position.append((p[1]+1, self.length-1))
+                            # zhuyin_ans.append(try_to_translate[:-1])
                             position.append((p[1]+1, self.length-1))
-                            zhuyin_ans.append(try_to_translate[:-1])
+                            zhuyin_ans.append(try_to_translate[:-1] + '}')
+
         self.position = position
         self.zhuyin_ans = zhuyin_ans
 
@@ -219,45 +222,15 @@ if __name__ == "__main__":
     file = sys.argv[1]
     count = 0
     result = []
-
-    w = open("Validation.txt", 'a');
-    
-    pre = 271388000127
-
     with open(file, "r") as f:
-        c = 0
-        offset = pre
-        f.seek(offset)
         for line in f:
-            c += 1
-            try: 
-                offset += len(line)
-                print(offset)
-                line = line.strip('\n')
-
-                off1 = line.find('@')
-                if off1 < 0:
-                    continue
-                off2 = line[off1:].find(':')
-                if off2 < 0:
-                    off2 = line[off1:].find(';')
-                if off2 < 0:
-                    continue
-
-                off2 += off1 + 1
-                password = line[off2:]
-                success, ret = x.search(password)
-                if(success):
-                    # print(password)
-                    result.append(ret)
-                    count += 1
-                    w.write(ret + '\n')
-                
+            l = line.strip('\n')
+            r = x.search(l)
+            if(r[0] == True):
                 # result.append(r[1])
-                # print(c)
-            except UnicodeEncodeError as e:
-                print(offset)
-                continue
+                print(r[1])
+                count += 1
+            result.append(r[1])
 
         print(f'find {count} passwords!')
 
@@ -265,10 +238,6 @@ if __name__ == "__main__":
     #     for i in result:
     #         f.write(i + '\n')
 
-    # with open("result.txt", 'w+') as f:
-    #     for i in result:
-    #         f.write(i + '\n')
-
-    # with open("Validation.txt", 'w+') as f:
-    #     for i in result:
-    #         f.write(i + '\n')
+    with open("result.txt", 'w+') as f:
+        for i in result:
+            f.write(i + '\n')

@@ -8,6 +8,12 @@
 # Ignore guess output file
 taiwan_passwd/wordlist/guesser/ntest*
 taiwan_passwd/wordlist/guesser/ztest*
+taiwan_passwd/wordlist/guesser/z2test*
+taiwan_passwd/wordlist/guesser/z3test*
+taiwan_passwd/wordlist/guesser/omen_ntest*
+taiwan_passwd/wordlist/guesser/omen_z2test*
+taiwan_passwd/wordlist/guesser/omen_z3test*
+
 
 # Ignore rulesets so I don't accidently upload something I don't want to
 Rules/*
@@ -16,6 +22,12 @@ Rules/*
 !Rules/Default
 !Rules/ZhuyinRules
 !Rules/NoZhuyin
+!Rules/WithZhuyin2
+!Rules/WithZhuyin3
+!Rules/OMENNoZhuyin
+!Rules/OMENZhuyin2
+!Rules/OMENZhuyin3
+!Rules/FullZhuyin
 
 # Don't commit save files
 *.sav
