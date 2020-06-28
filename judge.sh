@@ -25,13 +25,32 @@ function echo_outp()
 		echo "$@" >> ${output_file}
 	fi
 }
-
+function echo_record()
+{
+	if [[ ${silence} -eq $zero  ]]
+	then
+		echo "$@" | tee -a "${output_file}-record"
+	else
+		echo "$@" >> "${output_file}-record"
+	fi
+}
 
 function user_interrupt()
 {
 	end_time=`date +"%F %T"`
 	echo_outp "---Stop: ${end_time} Found: ${found} Guess: ${guess}---"
+	crontab -r
 	exit
+}
+
+function add_crontab()
+{
+	current=`pwd`
+	crontab -l > mycron
+	echo "*/10 * * * * echo \`cat ${current}/${output_file} | wc -l\` >> "${current}/${output_file}-count"" >> mycron
+	cat mycron
+	crontab mycron
+	rm mycron
 }
 
 while getopts "i:o:sh" opt
@@ -46,11 +65,20 @@ do
 done
 echo "$testing_file $output_file $silence"
 trap user_interrupt SIGINT
+#add_crontab
 cat /dev/null > ${output_file}
 echo_outp "---Start: ${start_time}---"
+#watch --interval=10 echo "$guess"
 while IFS='$\n' read -r line;
 do
-	ret=`grep "^${line}$" ${testing_file}` 
+	ret=`grep -Fx -e "${line}" ${testing_file} | head -1`
+	
+	if [ $[${guess} % 10000] -eq 0  ]
+	then
+		now=`date +"%F %T"`
+		echo_record "guess: ${guess} found: ${found} time: ${now} "
+	fi
+	
 	if [ ! -z "${ret}" ]
 	then
 		((found++))
