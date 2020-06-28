@@ -7,8 +7,8 @@ import os
 
 class SearchZhuyin():
     # CHANGE THESE
-    ZHUYIN_DICTIONARY_PATH='./lib_trainer/total.txt'
-    EXCEPTION_WORD_PATH='./lib_trainer/exceptionWord.txt'
+    ZHUYIN_DICTIONARY_PATH='./total.txt'
+    EXCEPTION_WORD_PATH='./exceptionWord.txt'
 
     # DO NOT CHANGE THESE
     ZHUYIN='ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ˙ˊˇˋ-'
@@ -205,13 +205,14 @@ class SearchZhuyin():
         if len(ret) > 0:
             return True, ret
 
+        ret = self.two_connected(inp)
+        if len(ret) > 0:
+            return True, ret
+
         ret = self.three_connected(inp)
         if len(ret) > 0:
             return True, ret
 
-        # ret = self.two_connected(inp)
-        # if len(ret) > 0:
-        #     return True, ret
 
 
         return False, inp
