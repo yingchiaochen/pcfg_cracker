@@ -6,6 +6,7 @@
 *.pyc
 
 # Ignore guess output file
+taiwan_passwd/wordlist/guesser/*
 taiwan_passwd/wordlist/guesser/ntest*
 taiwan_passwd/wordlist/guesser/ztest*
 taiwan_passwd/wordlist/guesser/z2test*
@@ -28,6 +29,8 @@ Rules/*
 !Rules/OMENZhuyin2
 !Rules/OMENZhuyin3
 !Rules/FullZhuyin
+!Rules/NewZhuyin3
+!Rules/Markov0_6
 
 # Don't commit save files
 *.sav

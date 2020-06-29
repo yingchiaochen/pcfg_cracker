@@ -231,7 +231,7 @@ if __name__ == "__main__":
                 # result.append(r[1])
                 print(r[1])
                 count += 1
-            result.append(r[1])
+                result.append(r[1])
 
         print(f'find {count} passwords!')
 
@@ -239,6 +239,6 @@ if __name__ == "__main__":
     #     for i in result:
     #         f.write(i + '\n')
 
-    with open("result.txt", 'w+') as f:
+    with open("result_no_zhu.txt", 'w+') as f:
         for i in result:
             f.write(i + '\n')

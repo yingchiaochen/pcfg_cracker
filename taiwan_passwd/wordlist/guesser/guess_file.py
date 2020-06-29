@@ -20,7 +20,7 @@ fg.close()
 fw = open(filename, 'w+')
 count = 0
 
-with open('../../testing_data/testing_pass', 'r') as f:
+with open('../../task1/testing_data/testing_pass', 'r') as f:
     for line in f:
         line = line.strip('\n')
         count += 1
