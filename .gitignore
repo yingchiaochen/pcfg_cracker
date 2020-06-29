@@ -6,7 +6,6 @@
 *.pyc
 
 # Ignore guess output file
-taiwan_passwd/wordlist/guesser/*
 taiwan_passwd/wordlist/guesser/ntest*
 taiwan_passwd/wordlist/guesser/ztest*
 taiwan_passwd/wordlist/guesser/z2test*
