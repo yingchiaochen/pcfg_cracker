@@ -245,9 +245,29 @@ l = []
 # filename_zhu = 'markov_no_result_zhu.txt'
 # filename = 'markov_no_guess.txt'
 
-filename_write = 'markov_0_6_result.txt'
-filename_zhu = 'markov_0_6_result_zhu.txt'
-filename = 'markov_0_6_guess.txt'
+# filename_write = 'markov_0_6_result.txt'
+# filename_zhu = 'markov_0_6_result_zhu.txt'
+# filename = 'markov_0_6_guess.txt'
+
+# filename_write = 'markov_0_4_result.txt'
+# filename_zhu = 'markov_0_4_result_zhu.txt'
+# filename = 'markov_0_4_guess.txt'
+
+# filename_write = 'original_8-6_result.txt'
+# filename_zhu = 'origianl_8-6_result_zhu.txt'
+# filename = 'original_8-6_guess.txt'
+
+# filename_write = 'new_zhuyin_8-6_result.txt'
+# filename_zhu = 'new_zhuyin_8-6_result_zhu.txt'
+# filename = 'new_zhuyin_8-6_guess.txt'
+
+# filename_write = 'markov_0_8_result.txt'
+# filename_zhu = 'markov_0_8_result_zhu.txt'
+# filename = 'markov_0_8_guess.txt'
+
+filename_write = 'markov_0_2_result.txt'
+filename_zhu = 'markov_0_2_result_zhu.txt'
+filename = 'markov_0_2_guess.txt'
 
 fw = open(filename_write, 'w+')
 fz = open(filename_zhu, 'w+')
@@ -263,9 +283,16 @@ with open(filename, 'r') as f:
 
 print(f'zhuyin: {len(l)}')
 
+# 100 M
 # markov: 64412/648/138
 # markov_no: 63644/52/22
 # prince: 17846/596/94
+# coverage = 0.8: 67377/655/148
+# coverage = 0.2: 61976/703/189
+
+# 8.6 M
+# original: 45159/2/2
+# newzhuyin: 47285/558/79
 
 
 

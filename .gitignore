@@ -6,13 +6,7 @@
 *.pyc
 
 # Ignore guess output file
-taiwan_passwd/wordlist/guesser/ntest*
-taiwan_passwd/wordlist/guesser/ztest*
-taiwan_passwd/wordlist/guesser/z2test*
-taiwan_passwd/wordlist/guesser/z3test*
-taiwan_passwd/wordlist/guesser/omen_ntest*
-taiwan_passwd/wordlist/guesser/omen_z2test*
-taiwan_passwd/wordlist/guesser/omen_z3test*
+
 
 
 # Ignore rulesets so I don't accidently upload something I don't want to
@@ -20,16 +14,13 @@ Rules/*
 
 # Don't ignore the default ruleset
 !Rules/Default
-!Rules/ZhuyinRules
 !Rules/NoZhuyin
-!Rules/WithZhuyin2
-!Rules/WithZhuyin3
-!Rules/OMENNoZhuyin
-!Rules/OMENZhuyin2
-!Rules/OMENZhuyin3
 !Rules/FullZhuyin
 !Rules/NewZhuyin3
+!Rules/Markov0_2
+!Rules/Markov0_4
 !Rules/Markov0_6
+!Rules/Markov0_8
 
 # Don't commit save files
 *.sav

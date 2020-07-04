@@ -36,7 +36,12 @@ import os
 # os.system('python3 guess_file.py markov.txt markov_guess.txt')
 # os.system('python3 guess_file.py prince.txt prince_guess.txt')
 # os.system('python3 guess_file.py markov_no.txt markov_no_guess.txt')
-os.system('python3 guess_file.py markov_0_6.txt markov_0_6_guess.txt')
+# os.system('python3 guess_file.py markov_0_6.txt markov_0_6_guess.txt')
+# os.system('python3 guess_file.py markov_0_4.txt markov_0_4_guess.txt')
+# os.system('python3 guess_file.py original_8-6.txt original_8-6_guess.txt')
+# os.system('python3 guess_file.py new_zhuyin_8-6.txt new_zhuyin_8-6_guess.txt')
+# os.system('python3 guess_file.py markov_0_8.txt markov_0_8_guess.txt')
+os.system('python3 guess_file.py markov_0_2.txt markov_0_2_guess.txt')
 
 
 

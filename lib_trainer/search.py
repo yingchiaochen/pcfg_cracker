@@ -209,9 +209,9 @@ class SearchZhuyin():
         # if len(ret) > 0:
         #     return True, ret
 
-        # ret = self.three_connected(inp)
-        # if len(ret) > 0:
-        #     return True, ret
+        ret = self.three_connected(inp)
+        if len(ret) > 0:
+            return True, ret
 
 
 
